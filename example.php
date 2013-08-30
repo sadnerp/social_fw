@@ -3,7 +3,7 @@
 require_once 'vkapi.class.php';
 
 $app = new vkapi();
-$app->proxy = '255.255.255.0:3128';
+$app->proxy = '192.168.0.2:3128';
 
 /**
  * @see https://oauth.vk.com/authorize?client_id=3382849&scope=offline&display=page&response_type=token

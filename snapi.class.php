@@ -2,22 +2,46 @@
 
 class snapi {
 
+	/**
+	 * proxy option
+	 * if u need it, put address:port
+	 */
 	public $proxy;
+
+	/**
+	 * api address
+	 * required. example: https://api.vk.com/method/
+	 * can be overload in subclass
+	 */
 	public $api_href;
+
+	/**
+	 * user access_token.
+	 * most api methods required this param
+	 */
 	public $access_token;
 
+	protected function apiRequest($method, $request) {
 
-	protected function apiRequest($request) {
+		/**
+		 * prepare array for implode
+		 */
+		foreach ($request as $k => &$v)
+			$v = $k . '=' . urlencode($v);
 
-		$method = $request['method'];
-		unset($request['method']);
+		$method_params = implode('&', $request);
 
-		$method_params = "";
-		foreach( $request as $k=>$v ) {
-			$method_params .= $k . "=" . urlencode( $v ) . "&";
-		}
+		/**
+		 * fix '?&' when method have not param  example '/blabla/blabla?&'
+		 */
+		if ($method_params)
+			$method_params .= '&';
 
-		$result = $this->curlRequest($this->api_href . $method . '?' . $method_params . 'access_token=' . $this->access_token );
+		/**
+		 * final URL
+		 */
+		$result = $this->curlRequest($this->api_href . $method . '?' . $method_params . 'access_token=' . $this->access_token);
+
 
 		return json_decode($result, true);
 	}
@@ -25,10 +49,10 @@ class snapi {
 	private function curlRequest($url) {
 
 		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);	// не выводить результат в браузер
-		curl_setopt($ch, CURLOPT_TIMEOUT, 60);			// максимальное время выполнение curl-запроса
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);	// следовать по всем редиректам
-		
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 

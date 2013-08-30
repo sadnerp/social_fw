@@ -9,10 +9,9 @@ class vkapi extends snapi {
 	/*
 	https://oauth.vk.com/authorize?client_id=3382849&scope=offline&display=page&response_type=token
 	*/
+	
 	public function usersGet() {
-		return $this->apiRequest(array(
-			'method' => 'users.get',
-		));
+		return $this->apiRequest('users.get', array('count'	=> 4, 'foto' => 'fotoalbum'));
 	}
 }
 ?>
